@@ -3,7 +3,6 @@ import arcade
 WINDOW_WITH = 600
 WINDOW_HEIGHT = 800
 
-
 class GameWindow(arcade.Window):
     def __init__(self):
         super().__init__(WINDOW_WITH, WINDOW_HEIGHT, 'Crossy Road')
