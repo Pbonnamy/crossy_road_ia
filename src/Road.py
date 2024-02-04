@@ -8,16 +8,14 @@ ROAD_COLOR_1 = (82, 88, 102)
 ROAD_COLOR_2 = (74, 80, 94)
 
 CAR_SPEEDS = [2, 2.5, 3]
-
-MIN_SPACING_BETWEEN_CARS = 1
-MAX_SPACING_BETWEEN_CARS = 5
+CAR_SPACINGS = [1, 2, 3, 4, 5]
 
 
 class Road(Lane):
     def __init__(self, index):
         super().__init__(index)
         self.cars = []
-        self.next_car_spacing = random.randint(MIN_SPACING_BETWEEN_CARS, MAX_SPACING_BETWEEN_CARS)
+        self.next_car_spacing = random.choice(CAR_SPACINGS)
         self.car_speed = random.choice(CAR_SPEEDS)
 
     def add_car(self):
@@ -30,7 +28,7 @@ class Road(Lane):
         # Handle car spawning
         if len(self.cars) == 0 or self.cars[-1].center_x - CAR_WIDTH / 2 > self.next_car_spacing * CAR_WIDTH:
             self.add_car()
-            self.next_car_spacing = random.randint(MIN_SPACING_BETWEEN_CARS, MAX_SPACING_BETWEEN_CARS)
+            self.next_car_spacing = random.choice(CAR_SPACINGS)
 
         # Handle car movement
         for car in self.cars:
