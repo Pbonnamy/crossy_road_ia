@@ -9,6 +9,8 @@ REWARD_ROAD = -1
 REWARD_GOAL = 100
 REWARD_WALL = -100
 
+DEBUG_MODE = True
+
 if __name__ == '__main__':
-    window = GameWindow()
+    window = GameWindow(DEBUG_MODE)
     arcade.run()
