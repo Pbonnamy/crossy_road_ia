@@ -34,8 +34,8 @@ class GameWindow(arcade.Window):
             self.debug_grid()
 
     def update(self, delta_time):
-        for road in self.lanes:
-            road.update()
+        for lane in self.lanes:
+            lane.update()
 
     def on_key_press(self, key, modifiers):
         self.player.move(key)
