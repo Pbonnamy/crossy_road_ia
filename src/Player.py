@@ -2,10 +2,10 @@ import arcade
 
 from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING
 
-Z_KEY = 122
-S_KEY = 115
-Q_KEY = 113
-D_KEY = 100
+UP_KEYS = [122, 65362]  # z, up arrow
+DOWN_KEYS = [115, 65364]  # s, down arrow
+LEFT_KEYS = [113, 65361]  # q, left arrow
+RIGHT_KEYS = [100, 65363]  # d, right arrow
 
 
 class Player:
@@ -22,13 +22,13 @@ class Player:
         center_x = self.sprite.center_x
         center_y = self.sprite.center_y
 
-        if key == Z_KEY:
+        if key in UP_KEYS:
             center_y += self.size
-        elif key == S_KEY:
+        elif key in DOWN_KEYS:
             center_y -= self.size
-        elif key == Q_KEY:
+        elif key in LEFT_KEYS:
             center_x -= self.size
-        elif key == D_KEY:
+        elif key in RIGHT_KEYS:
             center_x += self.size
 
         if self.can_move(center_x, center_y):

@@ -19,9 +19,9 @@ class GameWindow(arcade.Window):
     def generate_map(self):
         for i in range(0, MAP_ROW):
             if i < 1:
-                lane = SafeZone(i, 'start')
+                lane = SafeZone(i)
             elif i == MAP_ROW - 1:
-                lane = SafeZone(i, 'end')
+                lane = SafeZone(i)
             else:
                 rand = random.randint(0, 10)
                 if rand < 3:
