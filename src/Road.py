@@ -16,25 +16,37 @@ class Road(Lane):
         super().__init__(index)
         self.cars = []
         self.next_car_spacing = random.choice(CAR_SPACINGS)
-        self.car_speed = random.choice(CAR_SPEEDS)
+        self.direction = random.choice(['left', 'right'])
+        self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
 
     def add_car(self):
-        car = arcade.Sprite('assets/car_right.png', SPRITE_SCALING)
-        car.center_x = -CAR_WIDTH / 2
+        if self.direction == 'right':
+            car = arcade.Sprite('assets/car_right.png', SPRITE_SCALING)
+            car.center_x = -CAR_WIDTH / 2
+        else:
+            car = arcade.Sprite('assets/car_left.png', SPRITE_SCALING)
+            car.center_x = self.width + CAR_WIDTH / 2
+
         car.center_y = self.height / 2 + self.index * self.height
         self.cars.append(car)
 
     def update(self):
         # Handle car spawning
-        if len(self.cars) == 0 or self.cars[-1].center_x - CAR_WIDTH / 2 > self.next_car_spacing * CAR_WIDTH:
+        if len(self.cars) == 0 or self.should_spawn():
             self.add_car()
             self.next_car_spacing = random.choice(CAR_SPACINGS)
 
         # Handle car movement
         for car in self.cars:
             car.center_x += self.car_speed
-            if car.center_x - CAR_WIDTH / 2 > self.width:
+            if car.center_x - CAR_WIDTH / 2 > self.width or car.center_x + CAR_WIDTH / 2 < 0:
                 self.cars.remove(car)
+
+    def should_spawn(self):
+        if self.direction == 'right':
+            return self.cars[-1].center_x - CAR_WIDTH / 2 > self.next_car_spacing * CAR_WIDTH
+        else:
+            return self.cars[-1].center_x + CAR_WIDTH / 2 < self.width - self.next_car_spacing * CAR_WIDTH
 
     def draw(self):
         # Draw lane
