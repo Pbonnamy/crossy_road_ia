@@ -1,9 +1,11 @@
 import arcade
+import random
 
 from src.Grass import Grass
 from src.Player import Player
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW
 from src.Road import Road
+from src.SafeZone import SafeZone
 
 
 class GameWindow(arcade.Window):
@@ -16,10 +18,16 @@ class GameWindow(arcade.Window):
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
-            if i < 1 or i > MAP_ROW - 2:
-                lane = Grass(i)
+            if i < 1:
+                lane = SafeZone(i, 'start')
+            elif i == MAP_ROW - 1:
+                lane = SafeZone(i, 'end')
             else:
-                lane = Road(i)
+                rand = random.randint(0, 10)
+                if rand < 3:
+                    lane = Grass(i)
+                else:
+                    lane = Road(i)
 
             self.lanes.append(lane)
 
