@@ -1,6 +1,6 @@
 import arcade
 
-from GameWindow import GameWindow
+from src.GameWindow import GameWindow
 
 ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE = 'U', 'D', 'L', 'R', 'I'
 ACTIONS = [ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE]

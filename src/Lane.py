@@ -27,7 +27,7 @@ class Lane:
 
     def add_car(self):
         car = arcade.Sprite('assets/car_right.png', SPRITE_SCALING)
-        car.center_x = 0 - CAR_WIDTH / 2
+        car.center_x = -CAR_WIDTH / 2
         car.center_y = self.height / 2 + self.index * self.height
         self.cars.append(car)
 
