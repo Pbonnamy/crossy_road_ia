@@ -9,15 +9,15 @@ GRASS_COLOR_2 = (181, 236, 93)
 ROAD_COLOR_1 = (82, 88, 102)
 ROAD_COLOR_2 = (74, 80, 94)
 
-CAR_SPEEDS = [1, 2, 3]
+CAR_SPEEDS = [2, 2.5, 3]
 
-MIN_SPACING_BETWEEN_CARS = 0
+MIN_SPACING_BETWEEN_CARS = 1
 MAX_SPACING_BETWEEN_CARS = 5
 
 
-class Road:
-    def __init__(self, road_type, index):
-        self.road_type = road_type
+class Lane:
+    def __init__(self, lane_type, index):
+        self.lane_type = lane_type
         self.index = index
         self.height = SPRITE_SIZE
         self.width = MAP_COL * SPRITE_SIZE
@@ -32,11 +32,13 @@ class Road:
         self.cars.append(car)
 
     def update(self):
-        if self.road_type == 'road':
+        # Handle car spawning
+        if self.lane_type == 'road':
             if len(self.cars) == 0 or self.cars[-1].center_x - CAR_WIDTH / 2 > self.next_car_spacing * CAR_WIDTH:
                 self.add_car()
                 self.next_car_spacing = random.randint(MIN_SPACING_BETWEEN_CARS, MAX_SPACING_BETWEEN_CARS)
 
+        # Handle car movement
         for car in self.cars:
             car.center_x += self.car_speed
             if car.center_x - CAR_WIDTH / 2 > self.width:
@@ -49,13 +51,15 @@ class Road:
         width = self.width
         height = self.height
 
+        # Draw lane
         arcade.draw_rectangle_filled(center_x, center_y, width, height, color)
 
+        # Draw cars
         for car in self.cars:
             car.draw()
 
     def get_color(self):
-        match self.road_type:
+        match self.lane_type:
             case 'road':
                 return ROAD_COLOR_1 if self.index % 2 == 0 else ROAD_COLOR_2
             case 'grass':

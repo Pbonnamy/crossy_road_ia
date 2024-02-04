@@ -1,7 +1,7 @@
 import arcade
 
 from Player import Player
-from Road import Road
+from Lane import Lane
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW
 
 
@@ -15,11 +15,11 @@ class GameWindow(arcade.Window):
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
-            road_type = 'road'
+            lane_type = 'road'
             if i < 1 or i > MAP_ROW - 2:
-                road_type = 'grass'
+                lane_type = 'grass'
 
-            road = Road(road_type, i)
+            road = Lane(lane_type, i)
             self.roads.append(road)
 
     def on_draw(self):
