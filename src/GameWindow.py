@@ -1,8 +1,9 @@
 import arcade
 
+from src.Grass import Grass
 from src.Player import Player
-from src.Lane import Lane
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW
+from src.Road import Road
 
 
 class GameWindow(arcade.Window):
@@ -15,12 +16,12 @@ class GameWindow(arcade.Window):
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
-            lane_type = 'road'
             if i < 1 or i > MAP_ROW - 2:
-                lane_type = 'grass'
+                lane = Grass(i)
+            else:
+                lane = Road(i)
 
-            road = Lane(lane_type, i)
-            self.lanes.append(road)
+            self.lanes.append(lane)
 
     def on_draw(self):
         arcade.start_render()
@@ -33,7 +34,7 @@ class GameWindow(arcade.Window):
         if self.debug_mode:
             self.debug_grid()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         for lane in self.lanes:
             lane.update()
 
