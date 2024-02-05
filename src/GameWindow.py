@@ -18,9 +18,7 @@ class GameWindow(arcade.Window):
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
-            if i < 1:
-                lane = SafeZone(i)
-            elif i == MAP_ROW - 1:
+            if i == 0 or i == MAP_ROW - 1:
                 lane = SafeZone(i)
             else:
                 rand = random.randint(0, 10)
@@ -34,13 +32,13 @@ class GameWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
 
-        for road in self.lanes:
-            road.draw()
+        for lane in self.lanes:
+            lane.draw()
 
         self.player.draw()
 
         if self.debug_mode:
-            self.debug_grid()
+            self.draw_debug_grid()
 
     def on_update(self, delta_time):
         for lane in self.lanes:
@@ -49,7 +47,7 @@ class GameWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         self.player.move(key)
 
-    def debug_grid(self):
+    def draw_debug_grid(self):
         for i in range(0, MAP_COL):
             arcade.draw_line(i * SPRITE_SIZE, 0, i * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, arcade.color.WHITE, 1)
         for i in range(0, MAP_ROW):

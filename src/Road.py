@@ -1,7 +1,7 @@
 import arcade
 import random
 
-from settings import SPRITE_SCALING, SPRITE_SIZE, MAP_COL, CAR_WIDTH
+from settings import SPRITE_SCALING, CAR_WIDTH
 from src.Lane import Lane
 
 ROAD_COLOR_1 = (82, 88, 102)
@@ -20,11 +20,11 @@ class Road(Lane):
         self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
 
     def add_car(self):
+        car = arcade.Sprite('assets/car_' + self.direction + '.png', SPRITE_SCALING)
+
         if self.direction == 'right':
-            car = arcade.Sprite('assets/car_right.png', SPRITE_SCALING)
             car.center_x = -CAR_WIDTH / 2
         else:
-            car = arcade.Sprite('assets/car_left.png', SPRITE_SCALING)
             car.center_x = self.width + CAR_WIDTH / 2
 
         car.center_y = self.height / 2 + self.index * self.height

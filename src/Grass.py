@@ -16,17 +16,13 @@ class Grass(Lane):
     def __init__(self, index):
         super().__init__(index)
         self.obstacles = arcade.SpriteList()
-        self.number_of_obstacles = random.choice(NUMBER_OF_OBSTACLES)
 
-        for _ in range(self.number_of_obstacles):
+        for _ in range(random.choice(NUMBER_OF_OBSTACLES)):
             self.add_obstacle()
 
     def add_obstacle(self):
-        obstacle_type = random.choice(['rock', 'cactus'])
-        if obstacle_type == 'rock':
-            obstacle = arcade.Sprite(':resources:images/tiles/rock.png', SPRITE_SCALING)
-        else:
-            obstacle = arcade.Sprite(':resources:images/tiles/cactus.png', SPRITE_SCALING)
+        obstacle_type = random.choice(['rock.png', 'cactus.png'])
+        obstacle = arcade.Sprite(':resources:images/tiles/' + obstacle_type, SPRITE_SCALING)
 
         column = random.randint(0, MAP_COL - 1)
         obstacle.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
