@@ -14,7 +14,7 @@ CAR_SPACINGS = [1, 2, 3, 4, 5]
 class Road(Lane):
     def __init__(self, index):
         super().__init__(index)
-        self.cars = []
+        self.cars = arcade.SpriteList()
         self.next_car_spacing = random.choice(CAR_SPACINGS)
         self.direction = random.choice(['left', 'right'])
         self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
@@ -29,6 +29,10 @@ class Road(Lane):
 
         car.center_y = self.height / 2 + self.index * self.height
         self.cars.append(car)
+
+    def check_collision(self, player):
+        if arcade.check_for_collision_with_list(player.sprite, self.cars):
+            player.reset_position()
 
     def update(self):
         # Handle car spawning

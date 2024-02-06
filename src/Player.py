@@ -9,14 +9,17 @@ RIGHT_KEYS = [100, 65363]  # d, right arrow
 
 
 class Player:
-    def __init__(self, x, y):
+    def __init__(self):
         self.sprite = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
-        self.sprite.center_x = x
-        self.sprite.center_y = y
         self.size = SPRITE_SIZE
+        self.reset_position()
 
     def draw(self):
         self.sprite.draw()
+
+    def reset_position(self):
+        self.sprite.center_x = MAP_COL * SPRITE_SIZE / 2
+        self.sprite.center_y = SPRITE_SIZE / 2
 
     def move(self, key):
         center_x = self.sprite.center_x
@@ -39,3 +42,6 @@ class Player:
         max_x = MAP_COL * SPRITE_SIZE
         max_y = MAP_ROW * SPRITE_SIZE
         return 0 <= new_x < max_x and 0 <= new_y < max_y
+
+    def current_row(self):
+        return int(self.sprite.center_y / self.size)

@@ -11,7 +11,7 @@ from src.SafeZone import SafeZone
 class GameWindow(arcade.Window):
     def __init__(self, debug_mode):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
-        self.player = Player(MAP_COL * SPRITE_SIZE / 2, SPRITE_SIZE / 2)
+        self.player = Player()
         self.lanes = []
         self.generate_map()
         self.debug_mode = debug_mode
@@ -43,6 +43,9 @@ class GameWindow(arcade.Window):
     def on_update(self, delta_time):
         for lane in self.lanes:
             lane.update()
+            player_row = self.player.current_row()
+            if lane.index == player_row and isinstance(lane, Road):
+                lane.check_collision(self.player)
 
     def on_key_press(self, key, modifiers):
         self.player.move(key)
