@@ -30,9 +30,8 @@ class Road(Lane):
         car.center_y = self.height / 2 + self.index * self.height
         self.cars.append(car)
 
-    def check_collision(self, player):
-        if arcade.check_for_collision_with_list(player.sprite, self.cars):
-            player.reset_position()
+    def hit_by_car(self, player):
+        return arcade.check_for_collision_with_list(player.sprite, self.cars)
 
     def update(self):
         # Handle car spawning

@@ -13,8 +13,10 @@ class GameWindow(arcade.Window):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
         self.player = Player()
         self.lanes = []
-        self.generate_map()
         self.debug_mode = debug_mode
+        self.win_count = 0
+        self.loss_count = 0
+        self.generate_map()
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
@@ -40,12 +42,26 @@ class GameWindow(arcade.Window):
         if self.debug_mode:
             self.draw_debug_grid()
 
+        self.draw_counters()
+
+    def draw_counters(self):
+        arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
+        arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
+
     def on_update(self, delta_time):
+        player_row = self.player.current_row()
+
+        if player_row == MAP_ROW - 1:
+            self.win_count += 1
+            self.player.reset_position()
+
         for lane in self.lanes:
             lane.update()
-            player_row = self.player.current_row()
+
             if lane.index == player_row and isinstance(lane, Road):
-                lane.check_collision(self.player)
+                if lane.hit_by_car(self.player):
+                    self.loss_count += 1
+                    self.player.reset_position()
 
     def on_key_press(self, key, modifiers):
         self.player.move(key, self.lanes)
