@@ -1,6 +1,7 @@
 import arcade
 
 from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING
+from src.Grass import Grass
 
 UP_KEYS = [122, 65362]  # z, up arrow
 DOWN_KEYS = [115, 65364]  # s, down arrow
@@ -21,7 +22,7 @@ class Player:
         self.sprite.center_x = MAP_COL * SPRITE_SIZE / 2
         self.sprite.center_y = SPRITE_SIZE / 2
 
-    def move(self, key):
+    def move(self, key, lanes):
         center_x = self.sprite.center_x
         center_y = self.sprite.center_y
 
@@ -34,14 +35,31 @@ class Player:
         elif key in RIGHT_KEYS:
             center_x += self.size
 
-        if self.can_move(center_x, center_y):
+        if self.can_move(center_x, center_y, lanes):
             self.sprite.center_x = center_x
             self.sprite.center_y = center_y
 
-    def can_move(self, new_x, new_y):
+    def can_move(self, new_x, new_y, lanes):
         max_x = MAP_COL * SPRITE_SIZE
         max_y = MAP_ROW * SPRITE_SIZE
-        return 0 <= new_x < max_x and 0 <= new_y < max_y
+
+        # Check if the player is out of bounds
+        if new_x < 0 or new_x >= max_x or new_y < 0 or new_y >= max_y:
+            return False
+
+        target_row = int(new_y / self.size)
+
+        # Check if the player is trying to move into an obstacle
+        for lane in lanes:
+            if lane.index == target_row and isinstance(lane, Grass):
+                old_x, old_y = self.sprite.center_x, self.sprite.center_y
+                self.sprite.center_x, self.sprite.center_y = new_x, new_y
+                if arcade.check_for_collision_with_list(self.sprite, lane.obstacles):
+                    self.sprite.center_x, self.sprite.center_y = old_x, old_y
+                    return False
+                break
+
+        return True
 
     def current_row(self):
         return int(self.sprite.center_y / self.size)

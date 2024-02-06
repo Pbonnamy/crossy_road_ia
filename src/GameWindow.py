@@ -48,7 +48,7 @@ class GameWindow(arcade.Window):
                 lane.check_collision(self.player)
 
     def on_key_press(self, key, modifiers):
-        self.player.move(key)
+        self.player.move(key, self.lanes)
 
     def draw_debug_grid(self):
         for i in range(0, MAP_COL):
