@@ -1,6 +1,7 @@
 import arcade
 import random
 
+from src.BasicAgent import BasicAgent
 from src.Grass import Grass
 from src.Player import Player
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW
@@ -12,6 +13,7 @@ class GameWindow(arcade.Window):
     def __init__(self, debug_mode):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
         self.player = Player()
+        self.agent = BasicAgent(self.player)
         self.lanes = []
         self.debug_mode = debug_mode
         self.win_count = 0
@@ -40,15 +42,19 @@ class GameWindow(arcade.Window):
         self.player.draw()
 
         if self.debug_mode:
-            self.draw_debug_grid()
+            draw_debug_grid()
 
         self.draw_counters()
 
     def draw_counters(self):
-        arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
-        arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
+        arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14,
+                         bold=True)
+        arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14,
+                         bold=True)
 
     def on_update(self, delta_time):
+        self.agent.update(self.lanes)
+
         player_row = self.player.current_row()
 
         if player_row == MAP_ROW - 1:
