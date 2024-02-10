@@ -19,16 +19,25 @@ class Player:
         self.sprite.center_y = SPRITE_SIZE / 2
 
     def move(self, key, lanes):
+        print("je bouge", key)
+        print(key in UP_KEYS)
+        print(key in DOWN_KEYS)
+        print(key in LEFT_KEYS)
+        print(key in RIGHT_KEYS)
         center_x = self.sprite.center_x
         center_y = self.sprite.center_y
 
         if key in UP_KEYS:
+            print("je monte")
             center_y += self.size
         elif key in DOWN_KEYS:
+            print("je descend")
             center_y -= self.size
         elif key in LEFT_KEYS:
+            print("je vais a gauche")
             center_x -= self.size
         elif key in RIGHT_KEYS:
+            print("je vais a droite")
             center_x += self.size
 
         if self.can_move(center_x, center_y, lanes):
@@ -59,3 +68,7 @@ class Player:
 
     def current_row(self):
         return int(self.sprite.center_y / self.size)
+
+    def current_col(self):
+        return int(
+            self.sprite.center_x / self.size)  # Ajoutez cette méthode pour retourner la colonne actuelle du joueur

@@ -17,7 +17,7 @@ class Road(Lane):
         self.cars = arcade.SpriteList()
         self.next_car_spacing = random.choice(CAR_SPACINGS)
         self.direction = random.choice(['left', 'right'])
-        self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
+        self.car_speed = 1 #random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
 
     def add_car(self):
         car = arcade.Sprite('assets/car_' + self.direction + '.png', SPRITE_SCALING)
