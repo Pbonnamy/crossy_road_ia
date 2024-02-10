@@ -1,3 +1,6 @@
+import pickle
+from os.path import exists
+
 import numpy as np
 
 from settings import MAP_ROW, MAP_COL
@@ -17,6 +20,7 @@ class QLearningAgent:
         self.discount_factor = discount_factor
         self.epsilon = epsilon
         self.q_table = np.zeros((MAP_ROW, MAP_COL, len(ACTIONS)))
+        self.history = []
 
     def choose_action(self, actions):
         print("je choois une action")
@@ -33,6 +37,7 @@ class QLearningAgent:
         else:
             adjust_reward = reward
             print("Aucune voiture, récompense normal")
+        print(f'reward: {reward}, adjust_reward: {adjust_reward}')
         row, col = state
         next_row, next_col = next_state
         current_q = self.q_table[row, col, ACTIONS.index(action)]
@@ -40,8 +45,9 @@ class QLearningAgent:
         new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (
                 adjust_reward + self.discount_factor * max_future_q)
         self.q_table[row, col, ACTIONS.index(action)] = new_q
+        self.history.append(adjust_reward)
 
-        self.player.move(action, lanes)
+        # self.player.move(action, lanes)
 
     def reset(self):
         self.q_table = np.zeros((MAP_ROW, MAP_COL, len(ACTIONS)))
@@ -74,3 +80,12 @@ class QLearningAgent:
     def update_player(self, action, lanes):
         self.player.move(action, lanes)
 
+    def load(self, filename):
+        if exists(filename):
+            with open(filename, 'rb') as file:
+                self.q_table = pickle.load(file)
+            self.reset()
+
+    def save(self, filename):
+        with open(filename, 'wb') as file:
+            pickle.dump(self.q_table, file)

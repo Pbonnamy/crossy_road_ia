@@ -19,6 +19,7 @@ REWARD_ROAD = -1
 REWARD_GOAL = 100
 REWARD_WALL = -100
 
+AGENT_FILE = 'agent.qtable'
 
 MAP_START = 'S'
 MAP_GOAL = 'A'
@@ -29,15 +30,17 @@ def sign(x):
     return 1 if x > 0 else -1 if x < 0 else 0
 
 class GameWindow(arcade.Window):
-    def __init__(self, debug_mode):
+    def __init__(self, debug_mode, agent, player):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
-        self.player = Player()
-        self.agent = QLearningAgent(self.player)
+        self.player = player
+        self.agent = agent
         self.lanes = []
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
         self.generate_map()
+        self.map = {}
+        self.agent.load(AGENT_FILE)
 
     def calculate_reward(self):
         player_row = self.player.current_row()
@@ -84,7 +87,8 @@ class GameWindow(arcade.Window):
                 lane_str = ["."] * MAP_COL  # '.' représente un espace vide
                 for car in lane.cars:
                     col = int(car.center_x / SPRITE_SIZE)  # Calculer la colonne de la voiture
-                    lane_str[col] = "C"  # 'C' représente une voiture
+                    if col < len(lane_str):
+                        lane_str[col] = "C"
                 map_str += "".join(lane_str)
             map_str += "\n"  # Nouvelle ligne à la fin de chaque lane
 
@@ -135,6 +139,7 @@ class GameWindow(arcade.Window):
         action = self.agent.choose_action(ACTIONS)
         self.player.move(action, self.lanes)
         reward = self.calculate_reward()
+        print(f"reward: {reward}")
         next_state = (self.player.current_row(), self.player.current_col())
         # Passer action, reward et next_state à la méthode update de QLearningAgent
         self.agent.update(state, action, reward, next_state, self.lanes)
@@ -154,7 +159,7 @@ class GameWindow(arcade.Window):
                 if lane.hit_by_car(self.player):
                     self.loss_count += 1
                     self.player.reset_position()
-        return self.get_radar(self.get_pos())
+        #self.get_radar(self.get_pos())
 
     def on_key_press(self, key, modifiers):
         self.player.move(key, self.lanes)
