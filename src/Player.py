@@ -1,13 +1,10 @@
 import arcade
 
-from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING
+from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING, REWARD_WALL, REWARD_DEFAULT, ACTION_UP, ACTION_DOWN, \
+    ACTION_LEFT, ACTION_RIGHT, UP_KEYS, DOWN_KEYS, LEFT_KEYS, RIGHT_KEYS, REWARD_GOAL, REWARD_CAR
 from src.Agent import Agent
 from src.Grass import Grass
-
-UP_KEYS = [122, 65362]  # z, up arrow
-DOWN_KEYS = [115, 65364]  # s, down arrow
-LEFT_KEYS = [113, 65361]  # q, left arrow
-RIGHT_KEYS = [100, 65363]  # d, right arrow
+from src.Road import Road
 
 
 class Player:
@@ -40,7 +37,17 @@ class Player:
         if self.can_move(center_x, center_y, lanes):
             self.sprite.center_x = center_x
             self.sprite.center_y = center_y
-            self.agent.update()
+            if self.current_row() == MAP_ROW - 1:
+                return REWARD_GOAL
+            else:
+                for lane in lanes:
+                    if lane.index == self.current_row() and isinstance(lane, Road):
+                        if lane.hit_by_car(self):
+                            return REWARD_CAR
+
+            return REWARD_DEFAULT
+        else:
+            return REWARD_WALL
 
     def can_move(self, new_x, new_y, lanes):
         max_x = MAP_COL * SPRITE_SIZE

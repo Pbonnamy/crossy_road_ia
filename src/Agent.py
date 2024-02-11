@@ -1,26 +1,58 @@
-from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS
+from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
+    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW
+
+
+def arg_max(table):
+    return max(table, key=table.get)
 
 
 class Agent:
     def __init__(self, player, lanes):
         self.qtable = {}
-        self.learning_rate = 1
-        self.discount_factor = 1
+        self.learning_rate = 0.5
+        self.discount_factor = 0.5
         self.player = player
         self.lanes = lanes
-        self.update()
+        self.state = self.get_state()
+        self.add_state(self.state)
+
+    def best_action(self):
+        return arg_max(self.qtable[self.state])
+
+    def get_key(self, action):
+        if action == ACTION_UP:
+            return UP_ARROW
+        elif action == ACTION_DOWN:
+            return DOWN_ARROW
+        elif action == ACTION_LEFT:
+            return LEFT_ARROW
+        elif action == ACTION_RIGHT:
+            return RIGHT_ARROW
 
     def update(self):
-        current_state = self.get_state()
-        print(current_state)
-        self.add_state(current_state)
+        action = self.best_action()
+        reward = self.player.move(self.get_key(action), self.lanes)
+        new_state = self.get_state()
+        self.add_state(new_state)
+
+        max_q = max(self.qtable[new_state].values())
+        delta = self.learning_rate * (reward + self.discount_factor * max_q - self.qtable[self.state][action])
+        self.qtable[self.state][action] += delta
+        self.state = new_state
 
     def get_state(self):
         row = self.player.current_row() * SPRITE_SIZE
         col = self.player.current_col() * SPRITE_SIZE
-        neighbors = [(row + SPRITE_SIZE, col - SPRITE_SIZE), (row + SPRITE_SIZE, col), (row + SPRITE_SIZE, col + SPRITE_SIZE),  # 0,0 - 0,1 - 0,2
-                     (row, col - SPRITE_SIZE), (row, col + SPRITE_SIZE),  # 1,0 - 1,2 - (we don't need 1,1 because it's the player)
-                     (row - SPRITE_SIZE, col - SPRITE_SIZE), (row - SPRITE_SIZE, col), (row - SPRITE_SIZE, col + SPRITE_SIZE)]  # 2,0 - 2,1 - 2,2
+        neighbors = [
+            (row + SPRITE_SIZE, col - SPRITE_SIZE),  # 0, 0
+            (row + SPRITE_SIZE, col),  # 0, 1
+            (row + SPRITE_SIZE, col + SPRITE_SIZE),  # 0, 2
+            (row, col - SPRITE_SIZE),  # 1, 0
+            (row, col + SPRITE_SIZE),  # 1, 2
+            (row - SPRITE_SIZE, col - SPRITE_SIZE),  # 2, 0
+            (row - SPRITE_SIZE, col),  # 2, 1
+            (row - SPRITE_SIZE, col + SPRITE_SIZE)  # 2, 2
+        ]
 
         state = []
 
