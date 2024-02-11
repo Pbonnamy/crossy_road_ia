@@ -18,16 +18,88 @@ ACTIONS = [LEFT, RIGHT, UP, DOWN, ACTION_IDLE]
 REWARD_ROAD = -1
 REWARD_GOAL = 100
 REWARD_WALL = -100
+REWARD_DEFAULT = -1
 
 AGENT_FILE = 'agent.qtable'
 
 MAP_START = 'S'
 MAP_GOAL = 'A'
 MAP_WALL = 'O'
+MAP_CAR = 'C'
+SAFE_ZONE = 'S'
+
+MOVES = {ACTION_UP : (-1, 0),
+         ACTION_DOWN : (1, 0),
+         ACTION_LEFT : (0, -1),
+         ACTION_RIGHT : (0, 1)}
 
 
 def sign(x):
     return 1 if x > 0 else -1 if x < 0 else 0
+
+
+class Environment:
+    def __init__(self, str_map):
+        row, col = 0, 0
+        self.map = {}
+        self.start = []  # Liste pour stocker les coordonnées de départ
+        self.goal = []  # Liste pour stocker les coordonnées de fin
+        for line in str_map.strip().split('\n'):
+            for char in line:
+                self.map[row, col] = char
+                if char == MAP_START:
+                    self.start.append((row, col))
+                elif char == MAP_GOAL:
+                    self.goal.append((row, col))
+                col += 1
+            col = 0
+            row += 1
+
+        self.height = row
+        self.width = len(line)
+
+    def get_radar(self, state):
+        row, col = state[0], state[1]
+        neighbors = [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1),
+                     (row - 2, col), (row + 2, col), (row, col - 2), (row, col + 2)]
+        radar = []
+        for n in neighbors:
+            if n in self.map:
+                radar.append(self.map[n])
+            else:
+                radar.append(MAP_WALL)
+        delta_row = sign(self.goal[0] - row) + 1
+        delta_col = sign(self.goal[1] - col) + 1
+        radar_goal = [0] * 9
+
+        position = delta_row * 3 + delta_col
+        radar_goal[position] = 1
+
+        return tuple(radar + radar_goal)
+
+    def do(self, position, action):
+        move = MOVES[action]
+        new_position = (position[0] + move[0], position[1] + move[1])
+
+        if self.is_not_allowed(new_position):
+            reward = REWARD_WALL
+        else:
+            position = new_position
+            if new_position == self.goal:
+                reward = REWARD_GOAL
+            else:
+                reward = REWARD_DEFAULT
+        print("RADAAAR")
+        print(self.get_radar(position))
+        return self.get_radar(position), position, reward
+
+    def is_not_allowed(self, position):
+        return position not in self.map \
+            or self.map[position] in [MAP_START, MAP_WALL]
+
+
+
+
 
 class GameWindow(arcade.Window):
     def __init__(self, debug_mode, agent, player):
@@ -41,6 +113,7 @@ class GameWindow(arcade.Window):
         self.generate_map()
         self.map = {}
         self.agent.load(AGENT_FILE)
+        self.env = Environment(self.map_to_string())
 
     def calculate_reward(self):
         player_row = self.player.current_row()
@@ -74,21 +147,21 @@ class GameWindow(arcade.Window):
         for index, lane in enumerate(self.lanes):
             if isinstance(lane, SafeZone):
                 if index == MAP_ROW - 1:
-                    map_str += "A" * MAP_COL  # 'A' représente l'arrivée
+                    map_str += MAP_GOAL * MAP_COL  # 'A' représente l'arrivée
                 else:
-                    map_str += "S" * MAP_COL  # 'S' représente une la SafeZone de départ
+                    map_str += SAFE_ZONE * MAP_COL  # 'S' représente une la SafeZone de départ
             elif isinstance(lane, Grass):
                 lane_str = ["."] * MAP_COL  # '.' représente un espace vide
                 for obstacle in lane.obstacles:
                     col = int(obstacle.center_x / SPRITE_SIZE)  # Calculer la colonne de l'obstacle
-                    lane_str[col] = "O"  # 'O' représente un obstacle
+                    lane_str[col] = MAP_WALL  # 'O' représente un obstacle
                 map_str += "".join(lane_str)
             elif isinstance(lane, Road):
                 lane_str = ["."] * MAP_COL  # '.' représente un espace vide
                 for car in lane.cars:
                     col = int(car.center_x / SPRITE_SIZE)  # Calculer la colonne de la voiture
                     if col < len(lane_str):
-                        lane_str[col] = "C"
+                        lane_str[col] = MAP_CAR
                 map_str += "".join(lane_str)
             map_str += "\n"  # Nouvelle ligne à la fin de chaque lane
 
@@ -113,25 +186,6 @@ class GameWindow(arcade.Window):
                          bold=True)
         arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14,
                          bold=True)
-
-    def get_radar(self, state):
-        row, col = state[0], state[1]
-        neighbors = [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1),
-                     (row - 2, col), (row + 2, col), (row, col - 2), (row, col + 2)]
-        radar = []
-        for n in neighbors:
-            if n in self.map:
-                radar.append(self.map[n])
-            else:
-                radar.append(MAP_WALL)
-        delta_row = sign(self.goal[0] - row) + 1
-        delta_col = sign(self.goal[1] - col) + 1
-        radar_goal = [0] * 9
-
-        position = delta_row * 3 + delta_col
-        radar_goal[position] = 1
-
-        return tuple(radar + radar_goal)
 
     def on_update(self, delta_time):
         print(self.map_to_string())
@@ -159,7 +213,6 @@ class GameWindow(arcade.Window):
                 if lane.hit_by_car(self.player):
                     self.loss_count += 1
                     self.player.reset_position()
-        #self.get_radar(self.get_pos())
 
     def on_key_press(self, key, modifiers):
         self.player.move(key, self.lanes)
