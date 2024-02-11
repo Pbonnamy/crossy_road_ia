@@ -1,6 +1,6 @@
 import arcade
 
-from settings import SPRITE_SIZE, MAP_COL
+from settings import SPRITE_SIZE, MAP_COL, EMPTY
 
 
 class Lane:
@@ -24,3 +24,6 @@ class Lane:
 
     def update(self):
         pass
+
+    def get_state(self, col):
+        return EMPTY

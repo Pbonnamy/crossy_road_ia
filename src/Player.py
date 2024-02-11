@@ -1,6 +1,7 @@
 import arcade
 
 from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING
+from src.Agent import Agent
 from src.Grass import Grass
 
 UP_KEYS = [122, 65362]  # z, up arrow
@@ -10,10 +11,11 @@ RIGHT_KEYS = [100, 65363]  # d, right arrow
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, lanes):
         self.sprite = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
         self.size = SPRITE_SIZE
         self.reset_position()
+        self.agent = Agent(self, lanes)
 
     def draw(self):
         self.sprite.draw()
@@ -38,6 +40,7 @@ class Player:
         if self.can_move(center_x, center_y, lanes):
             self.sprite.center_x = center_x
             self.sprite.center_y = center_y
+            self.agent.update()
 
     def can_move(self, new_x, new_y, lanes):
         max_x = MAP_COL * SPRITE_SIZE
@@ -63,3 +66,6 @@ class Player:
 
     def current_row(self):
         return int(self.sprite.center_y / self.size)
+
+    def current_col(self):
+        return int(self.sprite.center_x / self.size)

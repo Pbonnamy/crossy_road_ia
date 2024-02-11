@@ -2,7 +2,7 @@ import random
 
 import arcade
 
-from settings import SPRITE_SCALING, MAP_COL, SPRITE_SIZE
+from settings import SPRITE_SCALING, MAP_COL, SPRITE_SIZE, EMPTY, WALL
 from src.Lane import Lane
 
 GRASS_COLOR_1 = (189, 244, 101)
@@ -44,3 +44,9 @@ class Grass(Lane):
 
     def get_color(self):
         return GRASS_COLOR_1 if self.index % 2 == 0 else GRASS_COLOR_2
+
+    def get_state(self, col):
+        for obstacle in self.obstacles:
+            if obstacle.center_x == col * SPRITE_SIZE + SPRITE_SIZE / 2:
+                return WALL
+        return EMPTY

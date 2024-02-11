@@ -1,7 +1,7 @@
 import arcade
 import random
 
-from settings import SPRITE_SCALING, CAR_WIDTH
+from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, CAR, SPRITE_SIZE
 from src.Lane import Lane
 
 ROAD_COLOR_1 = (82, 88, 102)
@@ -61,3 +61,12 @@ class Road(Lane):
 
     def get_color(self):
         return ROAD_COLOR_1 if self.index % 2 == 0 else ROAD_COLOR_2
+
+    def get_state(self, col):
+        fake_player = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
+        fake_player.center_x = col * SPRITE_SIZE + SPRITE_SIZE / 2
+        fake_player.center_y = self.height / 2 + self.index * self.height
+        for car in self.cars:
+            if arcade.check_for_collision(fake_player, car):
+                return CAR
+        return EMPTY

@@ -11,12 +11,12 @@ from src.SafeZone import SafeZone
 class GameWindow(arcade.Window):
     def __init__(self, debug_mode):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
-        self.player = Player()
         self.lanes = []
+        self.generate_map()
+        self.player = Player(self.lanes)
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
-        self.generate_map()
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
