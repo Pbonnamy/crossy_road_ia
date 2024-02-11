@@ -19,7 +19,7 @@ class Agent:
         row = self.player.current_row() * SPRITE_SIZE
         col = self.player.current_col() * SPRITE_SIZE
         neighbors = [(row + SPRITE_SIZE, col - SPRITE_SIZE), (row + SPRITE_SIZE, col), (row + SPRITE_SIZE, col + SPRITE_SIZE),  # 0,0 - 0,1 - 0,2
-                     (row, col - SPRITE_SIZE), (row, col + SPRITE_SIZE),  # 1,0 - 1,2
+                     (row, col - SPRITE_SIZE), (row, col + SPRITE_SIZE),  # 1,0 - 1,2 - (we don't need 1,1 because it's the player)
                      (row - SPRITE_SIZE, col - SPRITE_SIZE), (row - SPRITE_SIZE, col), (row - SPRITE_SIZE, col + SPRITE_SIZE)]  # 2,0 - 2,1 - 2,2
 
         state = []
