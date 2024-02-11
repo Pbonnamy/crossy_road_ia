@@ -1,7 +1,6 @@
 import arcade
 
-from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING, REWARD_WALL, REWARD_DEFAULT, ACTION_UP, ACTION_DOWN, \
-    ACTION_LEFT, ACTION_RIGHT, UP_KEYS, DOWN_KEYS, LEFT_KEYS, RIGHT_KEYS, REWARD_GOAL, REWARD_CAR
+from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING, REWARD_WALL, REWARD_DEFAULT, UP_KEYS, DOWN_KEYS, LEFT_KEYS, RIGHT_KEYS, REWARD_GOAL, REWARD_CAR
 from src.Agent import Agent
 from src.Grass import Grass
 from src.Road import Road
@@ -11,13 +10,14 @@ class Player:
     def __init__(self, lanes):
         self.sprite = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
         self.size = SPRITE_SIZE
-        self.reset_position()
         self.agent = Agent(self, lanes)
+        self.reset_position()
 
     def draw(self):
         self.sprite.draw()
 
     def reset_position(self):
+        self.agent.score = 0
         self.sprite.center_x = MAP_COL * SPRITE_SIZE / 2
         self.sprite.center_y = SPRITE_SIZE / 2
 

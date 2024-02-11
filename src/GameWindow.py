@@ -51,14 +51,18 @@ class GameWindow(arcade.Window):
     def on_update(self, delta_time):
         player_row = self.player.current_row()
 
-        # if player_row == MAP_ROW - 1: TODO: move to the player
-        #     self.win_count += 1
+        for lane in self.lanes:
+            lane.update()
 
         if player_row != MAP_ROW - 1:
             self.player.agent.update()
+        else:
+            print('Score: ', self.player.agent.score)
+            print('Qtable length: ', len(self.player.agent.qtable))
+            self.win_count += 1
+            self.player.reset_position()
 
         for lane in self.lanes:
-            lane.update()
 
             if lane.index == player_row and isinstance(lane, Road):
                 if lane.hit_by_car(self.player):

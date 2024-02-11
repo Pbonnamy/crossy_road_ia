@@ -1,5 +1,5 @@
 from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
-    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW
+    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE
 
 
 def arg_max(table):
@@ -13,6 +13,7 @@ class Agent:
         self.discount_factor = 0.5
         self.player = player
         self.lanes = lanes
+        self.score = 0
         self.state = self.get_state()
         self.add_state(self.state)
 
@@ -28,10 +29,13 @@ class Agent:
             return LEFT_ARROW
         elif action == ACTION_RIGHT:
             return RIGHT_ARROW
+        else:
+            return IDLE
 
     def update(self):
         action = self.best_action()
         reward = self.player.move(self.get_key(action), self.lanes)
+        self.score += reward
         new_state = self.get_state()
         self.add_state(new_state)
 
@@ -57,7 +61,12 @@ class Agent:
         state = []
 
         for neighbor in neighbors:
-            if neighbor[0] < 0 or neighbor[1] < 0 or neighbor[0] >= SPRITE_SIZE * MAP_ROW or neighbor[1] >= SPRITE_SIZE * MAP_COL:
+            if (
+                neighbor[0] < 0
+                or neighbor[1] < 0
+                or neighbor[0] >= SPRITE_SIZE * MAP_ROW
+                or neighbor[1] >= SPRITE_SIZE * MAP_COL
+            ):
                 state.append(WALL)
             else:
                 target_row = int(neighbor[0] / SPRITE_SIZE)
