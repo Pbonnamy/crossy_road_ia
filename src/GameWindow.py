@@ -50,10 +50,11 @@ class GameWindow(arcade.Window):
         arcade.draw_text('Score: ' + str(self.player.agent.score), MAP_COL * SPRITE_SIZE - 120, MAP_ROW * SPRITE_SIZE - 30, arcade.color.BLACK, 14, bold=True)
 
     def on_update(self, delta_time):
-        player_row = self.player.current_row()
 
         for lane in self.lanes:
             lane.update()
+
+        player_row = self.player.current_row()
 
         if player_row != MAP_ROW - 1:
             self.player.agent.update()
@@ -64,8 +65,9 @@ class GameWindow(arcade.Window):
             self.win_count += 1
             self.player.reset_position()
 
-        for lane in self.lanes:
+        player_row = self.player.current_row()
 
+        for lane in self.lanes:
             if lane.index == player_row and isinstance(lane, Road):
                 if lane.hit_by_car(self.player):
                     self.loss_count += 1
