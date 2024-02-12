@@ -1,9 +1,12 @@
 import arcade
+import arcade.gui
 import random
+
+from arcade.gui import UIBoxLayout
 
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE
 from src.Road import Road
 from src.SafeZone import SafeZone
 
@@ -17,6 +20,9 @@ class GameWindow(arcade.Window):
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
+        self.ui_manager = arcade.gui.UIManager()
+        self.rate = BASE_WINDOW_RATE
+        self.handle_ui()
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
@@ -44,12 +50,57 @@ class GameWindow(arcade.Window):
             self.player.agent.draw_state()
 
         self.draw_counters()
+        self.ui_manager.draw()
 
     def draw_counters(self):
-        arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
-        arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
-        arcade.draw_text('QTable length: ' + str(len(self.player.agent.qtable) * len(ACTIONS)), MAP_COL * SPRITE_SIZE - 210,MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
-        arcade.draw_text('Score: ' + str(self.player.agent.score), MAP_COL * SPRITE_SIZE - 120, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
+        self.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20)
+        self.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40)
+        winrate = round(self.win_count / (self.win_count + self.loss_count) * 100, 2) if self.win_count + self.loss_count > 0 else 0
+        self.draw_text('Winrate: ' + str(winrate) + '%', MAP_COL / 3 * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE - 20)
+        self.draw_text('Iterations: ' + str(self.win_count + self.loss_count), MAP_COL / 3 * SPRITE_SIZE,MAP_ROW * SPRITE_SIZE - 40)
+        self.draw_text('Q-Table Size: ' + str(len(self.player.agent.qtable) * len(ACTIONS)), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 20)
+        self.draw_text('Score: ' + str(self.player.agent.score), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 40)
+        self.draw_text('Speed: ' + str(self.rate), MAP_COL/8 * SPRITE_SIZE, 20)
+
+    def draw_text(self, text, x, y):
+        arcade.draw_text(text, x, y, arcade.color.BLACK, 14, bold=True)
+
+    def handle_ui(self):
+        self.ui_manager.enable()
+
+        layout = UIBoxLayout(
+            x=0,
+            y=SPRITE_SIZE / 2 * 1.5 + 10,
+            vertical=False
+        )
+
+        add_speed_btn = arcade.gui.UIFlatButton(
+            text="+",
+            width=SPRITE_SIZE / 2 * 1.5,
+            height=SPRITE_SIZE / 2 * 1.5,
+        )
+
+        add_speed_btn.on_click = self.add_speed
+
+        padding = arcade.gui.UIPadding(
+            padding=(5, 5, 5, 5),
+            child=add_speed_btn
+        )
+
+        remove_speed_btn = arcade.gui.UIFlatButton(
+            text="-",
+            width=SPRITE_SIZE / 2 * 1.5,
+            height=SPRITE_SIZE / 2 * 1.5,
+        )
+
+        remove_speed_btn.on_click = self.remove_speed
+
+        layout.add(padding)
+        layout.add(remove_speed_btn)
+
+        self.ui_manager.add(
+            layout
+        )
 
     def on_update(self, delta_time):
 
@@ -61,7 +112,6 @@ class GameWindow(arcade.Window):
         if player_row != MAP_ROW - 1:
             self.player.agent.update()
         else:
-            print('Score: ', self.player.agent.score)
             self.player.agent.history.append(self.player.agent.score)
             self.win_count += 1
             self.player.reset_position()
@@ -77,6 +127,14 @@ class GameWindow(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         self.player.move(key, self.lanes)
+
+    def add_speed(self, _):
+        self.rate *= 2
+        self.set_update_rate(1 / self.rate)
+
+    def remove_speed(self, _):
+        self.rate /= 2
+        self.set_update_rate(1 / self.rate)
 
     def draw_debug_grid(self):
         for i in range(0, MAP_COL):
