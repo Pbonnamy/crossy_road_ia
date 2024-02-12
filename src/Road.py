@@ -1,14 +1,14 @@
 import arcade
 import random
 
-from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, CAR, SPRITE_SIZE
+from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, SPRITE_SIZE, CAR_RIGHT, CAR_LEFT
 from src.Lane import Lane
 
 ROAD_COLOR_1 = (82, 88, 102)
 ROAD_COLOR_2 = (74, 80, 94)
 
 CAR_SPEEDS = [2, 2.5, 3]
-CAR_SPACINGS = [1, 2, 3, 4, 5]
+CAR_SPACINGS = [4, 5]
 
 
 class Road(Lane):
@@ -68,5 +68,5 @@ class Road(Lane):
         fake_player.center_y = self.height / 2 + self.index * self.height
         for car in self.cars:
             if arcade.check_for_collision(fake_player, car):
-                return CAR
+                return CAR_RIGHT if self.direction == 'right' else CAR_LEFT
         return EMPTY

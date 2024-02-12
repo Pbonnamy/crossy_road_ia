@@ -5,6 +5,7 @@ from src.GameWindow import GameWindow
 
 if __name__ == '__main__':
     window = GameWindow(DEBUG_MODE)
+    window.set_update_rate(1 / 60)
     window.run()
 
     plt.plot(window.player.agent.history)

@@ -24,7 +24,7 @@ class GameWindow(arcade.Window):
                 lane = SafeZone(i, "start" if i == 0 else "end")
             else:
                 rand = random.randint(0, 10)
-                if rand < 3:
+                if rand < 8:
                     lane = Grass(i)
                 else:
                     lane = Road(i)
@@ -70,6 +70,7 @@ class GameWindow(arcade.Window):
         for lane in self.lanes:
             if lane.index == player_row and isinstance(lane, Road):
                 if lane.hit_by_car(self.player):
+                    self.player.agent.history.append(self.player.agent.score)
                     self.loss_count += 1
                     self.player.reset_position()
 

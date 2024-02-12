@@ -17,7 +17,8 @@ REWARD_DEFAULT = -1
 REWARD_GOAL = 100
 
 WALL = 'W'
-CAR = 'C'
+CAR_RIGHT = 'CR'
+CAR_LEFT = 'CL'
 GOAL = 'G'
 EMPTY = ' '
 
