@@ -1,6 +1,10 @@
+import pickle
+from os.path import exists
+
 from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
     ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE
 
+QTABLE_FILE = 'agent.qtable'
 
 def arg_max(table):
     return max(table, key=table.get)
@@ -9,6 +13,7 @@ def arg_max(table):
 class Agent:
     def __init__(self, player, lanes):
         self.qtable = {}
+        self.load_qtable()
         self.learning_rate = 0.5
         self.discount_factor = 0.5
         self.player = player
@@ -88,6 +93,15 @@ class Agent:
                         break
 
         return tuple(state)
+
+    def save_qtable(self):
+        with open(QTABLE_FILE, 'wb') as file:
+            pickle.dump(self.qtable, file)
+
+    def load_qtable(self):
+        if exists(QTABLE_FILE):
+            with open(QTABLE_FILE, 'rb') as file:
+                self.qtable = pickle.load(file)
 
     def add_state(self, state):
         if state not in self.qtable:

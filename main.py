@@ -8,5 +8,7 @@ if __name__ == '__main__':
     window.set_update_rate(1 / 60)
     window.run()
 
+    window.player.agent.save_qtable()
+
     plt.plot(window.player.agent.history)
     plt.show()
