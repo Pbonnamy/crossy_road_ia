@@ -14,6 +14,7 @@ class Agent:
         self.player = player
         self.lanes = lanes
         self.score = 0
+        self.history = []
         self.state = self.get_state()
         self.add_state(self.state)
 

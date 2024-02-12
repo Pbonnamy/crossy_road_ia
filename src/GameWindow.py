@@ -47,6 +47,7 @@ class GameWindow(arcade.Window):
     def draw_counters(self):
         arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
         arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
+        arcade.draw_text('Score: ' + str(self.player.agent.score), MAP_COL * SPRITE_SIZE - 120, MAP_ROW * SPRITE_SIZE - 30, arcade.color.BLACK, 14, bold=True)
 
     def on_update(self, delta_time):
         player_row = self.player.current_row()
@@ -59,6 +60,7 @@ class GameWindow(arcade.Window):
         else:
             print('Score: ', self.player.agent.score)
             print('Qtable length: ', len(self.player.agent.qtable))
+            self.player.agent.history.append(self.player.agent.score)
             self.win_count += 1
             self.player.reset_position()
 
