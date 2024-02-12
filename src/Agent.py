@@ -1,6 +1,8 @@
 import pickle
 from os.path import exists
 
+import arcade
+
 from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
     ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE
 
@@ -50,10 +52,10 @@ class Agent:
         self.qtable[self.state][action] += delta
         self.state = new_state
 
-    def get_state(self):
+    def get_neighbors(self):
         row = self.player.current_row() * SPRITE_SIZE
         col = self.player.current_col() * SPRITE_SIZE
-        neighbors = [
+        return [
             (row + SPRITE_SIZE * 2, col - SPRITE_SIZE),
             (row + SPRITE_SIZE * 2, col),
             (row + SPRITE_SIZE * 2, col + SPRITE_SIZE),
@@ -73,6 +75,9 @@ class Agent:
             (row - SPRITE_SIZE, col + SPRITE_SIZE),
             (row - SPRITE_SIZE, col + SPRITE_SIZE * 2)
         ]
+
+    def get_state(self):
+        neighbors = self.get_neighbors()
 
         state = []
 
@@ -102,6 +107,28 @@ class Agent:
         if exists(QTABLE_FILE):
             with open(QTABLE_FILE, 'rb') as file:
                 self.qtable = pickle.load(file)
+
+    def draw_state(self):
+        neighbors = self.get_neighbors()
+        current_state = self.get_state()
+        for i in range(0, len(neighbors)):
+            arcade.draw_rectangle_outline(
+                neighbors[i][1] + SPRITE_SIZE / 2,
+                neighbors[i][0] + SPRITE_SIZE / 2,
+                SPRITE_SIZE,
+                SPRITE_SIZE,
+                arcade.color.RED
+            )
+
+            arcade.draw_text(
+                current_state[i],
+                neighbors[i][1] + SPRITE_SIZE / 2,
+                neighbors[i][0] + SPRITE_SIZE / 2,
+                arcade.color.RED,
+                14,
+                anchor_x='center',
+                anchor_y='center'
+            )
 
     def add_state(self, state):
         if state not in self.qtable:

@@ -41,6 +41,7 @@ class GameWindow(arcade.Window):
 
         if self.debug_mode:
             self.draw_debug_grid()
+            self.player.agent.draw_state()
 
         self.draw_counters()
 
