@@ -3,7 +3,7 @@ import random
 
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS
 from src.Road import Road
 from src.SafeZone import SafeZone
 
@@ -48,7 +48,7 @@ class GameWindow(arcade.Window):
     def draw_counters(self):
         arcade.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
         arcade.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
-        arcade.draw_text('QTable length: ' + str(len(self.player.agent.qtable)), MAP_COL * SPRITE_SIZE - 210,MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
+        arcade.draw_text('QTable length: ' + str(len(self.player.agent.qtable) * len(ACTIONS)), MAP_COL * SPRITE_SIZE - 210,MAP_ROW * SPRITE_SIZE - 20, arcade.color.BLACK, 14, bold=True)
         arcade.draw_text('Score: ' + str(self.player.agent.score), MAP_COL * SPRITE_SIZE - 120, MAP_ROW * SPRITE_SIZE - 40, arcade.color.BLACK, 14, bold=True)
 
     def on_update(self, delta_time):
