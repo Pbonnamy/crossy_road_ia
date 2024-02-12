@@ -2,13 +2,11 @@ import random
 
 import arcade
 
-from settings import SPRITE_SCALING, MAP_COL, SPRITE_SIZE, EMPTY, WALL
+from settings import SPRITE_SCALING, MAP_COL, SPRITE_SIZE, EMPTY, WALL, NUMBER_OF_OBSTACLES
 from src.Lane import Lane
 
 GRASS_COLOR_1 = (189, 244, 101)
 GRASS_COLOR_2 = (181, 236, 93)
-
-NUMBER_OF_OBSTACLES = [2, 3, 4]
 
 
 class Grass(Lane):

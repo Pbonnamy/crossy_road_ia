@@ -1,14 +1,11 @@
 import arcade
 import random
 
-from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, SPRITE_SIZE, CAR_RIGHT, CAR_LEFT
+from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, SPRITE_SIZE, CAR_RIGHT, CAR_LEFT, CAR_SPACINGS, CAR_SPEEDS
 from src.Lane import Lane
 
 ROAD_COLOR_1 = (82, 88, 102)
 ROAD_COLOR_2 = (74, 80, 94)
-
-CAR_SPEEDS = [2, 2.5, 3]
-CAR_SPACINGS = [4, 5]
 
 
 class Road(Lane):

@@ -3,7 +3,7 @@ import random
 
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY
 from src.Road import Road
 from src.SafeZone import SafeZone
 
@@ -24,10 +24,10 @@ class GameWindow(arcade.Window):
                 lane = SafeZone(i, "start" if i == 0 else "end")
             else:
                 rand = random.randint(0, 10)
-                if rand < 8:
-                    lane = Grass(i)
-                else:
+                if rand < ROAD_PROBABILITY:
                     lane = Road(i)
+                else:
+                    lane = Grass(i)
 
             self.lanes.append(lane)
 

@@ -4,9 +4,8 @@ from os.path import exists
 import arcade
 
 from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
-    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE
+    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE, QTABLE_FILE
 
-QTABLE_FILE = 'agent.qtable'
 
 def arg_max(table):
     return max(table, key=table.get)
@@ -83,10 +82,10 @@ class Agent:
 
         for neighbor in neighbors:
             if (
-                neighbor[0] < 0
-                or neighbor[1] < 0
-                or neighbor[0] >= SPRITE_SIZE * MAP_ROW
-                or neighbor[1] >= SPRITE_SIZE * MAP_COL
+                    neighbor[0] < 0
+                    or neighbor[1] < 0
+                    or neighbor[0] >= SPRITE_SIZE * MAP_ROW
+                    or neighbor[1] >= SPRITE_SIZE * MAP_COL
             ):
                 state.append(WALL)
             else:
