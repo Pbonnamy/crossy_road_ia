@@ -9,6 +9,7 @@ from src.Player import Player
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE
 from src.Road import Road
 from src.SafeZone import SafeZone
+from src.UI import UI
 
 
 class GameWindow(arcade.Window):
@@ -20,9 +21,8 @@ class GameWindow(arcade.Window):
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
-        self.ui_manager = arcade.gui.UIManager()
         self.rate = BASE_WINDOW_RATE
-        self.handle_ui()
+        self.ui = UI(self)
 
     def generate_map(self):
         for i in range(0, MAP_ROW):
@@ -50,7 +50,7 @@ class GameWindow(arcade.Window):
             self.player.agent.draw_state()
 
         self.draw_counters()
-        self.ui_manager.draw()
+        self.ui.draw()
 
     def draw_counters(self):
         self.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20)
@@ -64,43 +64,6 @@ class GameWindow(arcade.Window):
 
     def draw_text(self, text, x, y):
         arcade.draw_text(text, x, y, arcade.color.BLACK, 14, bold=True)
-
-    def handle_ui(self):
-        self.ui_manager.enable()
-
-        layout = UIBoxLayout(
-            x=0,
-            y=SPRITE_SIZE / 2 * 1.5 + 10,
-            vertical=False
-        )
-
-        add_speed_btn = arcade.gui.UIFlatButton(
-            text="+",
-            width=SPRITE_SIZE / 2 * 1.5,
-            height=SPRITE_SIZE / 2 * 1.5,
-        )
-
-        add_speed_btn.on_click = self.add_speed
-
-        padding = arcade.gui.UIPadding(
-            padding=(5, 5, 5, 5),
-            child=add_speed_btn
-        )
-
-        remove_speed_btn = arcade.gui.UIFlatButton(
-            text="-",
-            width=SPRITE_SIZE / 2 * 1.5,
-            height=SPRITE_SIZE / 2 * 1.5,
-        )
-
-        remove_speed_btn.on_click = self.remove_speed
-
-        layout.add(padding)
-        layout.add(remove_speed_btn)
-
-        self.ui_manager.add(
-            layout
-        )
 
     def on_update(self, delta_time):
 
@@ -127,14 +90,6 @@ class GameWindow(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         self.player.move(key, self.lanes)
-
-    def add_speed(self, _):
-        self.rate *= 2
-        self.set_update_rate(1 / self.rate)
-
-    def remove_speed(self, _):
-        self.rate /= 2
-        self.set_update_rate(1 / self.rate)
 
     def draw_debug_grid(self):
         for i in range(0, MAP_COL):
