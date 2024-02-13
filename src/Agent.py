@@ -4,7 +4,7 @@ from os.path import exists
 import arcade
 
 from settings import SPRITE_SIZE, MAP_ROW, MAP_COL, WALL, ACTIONS, ACTION_UP, UP_ARROW, ACTION_DOWN, DOWN_ARROW, \
-    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE, QTABLE_FILE
+    ACTION_LEFT, LEFT_ARROW, ACTION_RIGHT, RIGHT_ARROW, IDLE, QTABLE_FILE, LEARNING_RATE, DISCOUNT_FACTOR
 
 
 def arg_max(table):
@@ -15,8 +15,8 @@ class Agent:
     def __init__(self, player, lanes):
         self.qtable = {}
         self.load_qtable()
-        self.learning_rate = 0.5
-        self.discount_factor = 0.5
+        self.learning_rate = LEARNING_RATE
+        self.discount_factor = DISCOUNT_FACTOR
         self.player = player
         self.lanes = lanes
         self.score = 0

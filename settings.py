@@ -1,36 +1,49 @@
+# Sprite sizes
 SPRITE_SCALING = 0.4
 SPRITE_SIZE = int(128 * SPRITE_SCALING)
-
 CAR_WIDTH = int(256 * SPRITE_SCALING)
 
+# Map dimensions
 MAP_COL = 17  # Odd number only
 MAP_ROW = 15
 
+# Allow debug information
 DEBUG_MODE = True
 
+# Possible actions
 ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE = 'U', 'D', 'L', 'R', 'I'
 ACTIONS = [ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE]
 
+# Q-Learning settings
+LEARNING_RATE = 0.5
+DISCOUNT_FACTOR = 0.5
+
+# Rewards
 REWARD_WALL = -25
 REWARD_CAR = -50
 REWARD_DEFAULT = -1
 REWARD_GOAL = 100
 
+# Speed of the game
 BASE_WINDOW_RATE = 60
 
+# Lane settings
 NUMBER_OF_OBSTACLES = [2, 3, 4]
 CAR_SPEEDS = [2, 2.5, 3]
 CAR_SPACINGS = [4, 5]
 ROAD_PROBABILITY = 2  # out of 10
 
+# State symbols
 WALL = 'W'
 CAR_RIGHT = 'CR'
 CAR_LEFT = 'CL'
 GOAL = 'G'
 EMPTY = ' '
 
+# Q-Table filename
 QTABLE_FILE = 'agent.qtable'
 
+# Key bindings
 Z_KEY, S_KEY, Q_KEY, D_KEY = 122, 115, 113, 100
 UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW = 65362, 65364, 65361, 65363
 IDLE = -1
