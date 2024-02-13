@@ -7,10 +7,11 @@ from src.Road import Road
 
 
 class Player:
-    def __init__(self, lanes):
+    def __init__(self, lanes, learning_mode=False):
         self.sprite = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
         self.size = SPRITE_SIZE
         self.lanes = lanes
+        self.learning_mode = learning_mode
         self.agent = Agent(self, lanes)
         self.reset_position()
 
@@ -39,17 +40,24 @@ class Player:
         elif key in RIGHT_KEYS:
             center_x += self.size
 
-        if self.can_move(center_x, center_y):
+        if self.learning_mode:
+            if self.can_move(center_x, center_y):
+                self.sprite.center_x = center_x
+                self.sprite.center_y = center_y
+                if self.current_row() == MAP_ROW - 1:
+                    return REWARD_GOAL
+                else:
+                    for lane in self.lanes:
+                        if lane.index == self.current_row() and isinstance(lane, Road):
+                            if lane.hit_by_car(self):
+                                return REWARD_CAR
+
+                return REWARD_DEFAULT
+            else:
+                return REWARD_WALL
+        elif self.can_move(center_x, center_y):
             self.sprite.center_x = center_x
             self.sprite.center_y = center_y
-            if self.current_row() == MAP_ROW - 1:
-                return REWARD_GOAL
-            else:
-                for lane in self.lanes:
-                    if lane.index == self.current_row() and isinstance(lane, Road):
-                        if lane.hit_by_car(self):
-                            return REWARD_CAR
-
             return REWARD_DEFAULT
         else:
             return REWARD_WALL

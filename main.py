@@ -1,13 +1,11 @@
+import arcade
 import matplotlib.pyplot as plt
 
 from settings import DEBUG_MODE
 from src.GameWindow import GameWindow
+from src.MenuWindow import MenuWindow
 
 if __name__ == '__main__':
-    window = GameWindow(DEBUG_MODE)
-    window.run()
+    menu = MenuWindow()
+    menu.run()
 
-    window.player.agent.save_qtable()
-
-    plt.plot(window.player.agent.history)
-    plt.show()

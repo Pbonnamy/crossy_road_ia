@@ -1,21 +1,24 @@
 import arcade
 import random
 
+from matplotlib import pyplot as plt
+
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE, DEBUG_MODE
 from src.Road import Road
 from src.SafeZone import SafeZone
 from src.UI import UI
 
 
 class GameWindow(arcade.Window):
-    def __init__(self, debug_mode):
+    def __init__(self, debug_mode=False, learning_mode=False):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
         self.lanes = []
-        self.player = Player(self.lanes)
+        self.player = Player(self.lanes, learning_mode=learning_mode)
         self.new_map()
         self.debug_mode = debug_mode
+        self.learning_mode = learning_mode
         self.win_count = 0
         self.loss_count = 0
         self.rate = BASE_WINDOW_RATE
@@ -61,12 +64,16 @@ class GameWindow(arcade.Window):
     def draw_counters(self):
         self.draw_text('Wins: ' + str(self.win_count), 5, MAP_ROW * SPRITE_SIZE - 20)
         self.draw_text('Losses: ' + str(self.loss_count), 5, MAP_ROW * SPRITE_SIZE - 40)
-        winrate = round(self.win_count / (self.win_count + self.loss_count) * 100, 2) if self.win_count + self.loss_count > 0 else 0
+        winrate = round(self.win_count / (self.win_count + self.loss_count) * 100,
+                        2) if self.win_count + self.loss_count > 0 else 0
         self.draw_text('Winrate: ' + str(winrate) + '%', MAP_COL / 3 * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE - 20)
-        self.draw_text('Iterations: ' + str(self.win_count + self.loss_count), MAP_COL / 3 * SPRITE_SIZE,MAP_ROW * SPRITE_SIZE - 40)
-        self.draw_text('Q-Table Size: ' + str(len(self.player.agent.qtable) * len(ACTIONS)), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 20)
-        self.draw_text('Score: ' + str(self.player.agent.score), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 40)
-        self.draw_text('Speed: ' + str(self.rate), MAP_COL/8 * SPRITE_SIZE, 20)
+        self.draw_text('Iterations: ' + str(self.win_count + self.loss_count), MAP_COL / 3 * SPRITE_SIZE,
+                       MAP_ROW * SPRITE_SIZE - 40)
+        self.draw_text('Q-Table Size: ' + str(len(self.player.agent.qtable) * len(ACTIONS)),
+                       MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 20)
+        self.draw_text('Score: ' + str(self.player.agent.score), MAP_COL / 3 * SPRITE_SIZE * 2,
+                       MAP_ROW * SPRITE_SIZE - 40)
+        self.draw_text('Speed: ' + str(self.rate), MAP_COL / 8 * SPRITE_SIZE, 20)
 
     def draw_text(self, text, x, y):
         arcade.draw_text(text, x, y, arcade.color.BLACK, 14, bold=True)
@@ -78,12 +85,16 @@ class GameWindow(arcade.Window):
 
         player_row = self.player.current_row()
 
-        if player_row != MAP_ROW - 1:
+        if self.learning_mode and player_row != MAP_ROW - 1:
             self.player.agent.update()
         else:
-            self.player.agent.history.append(self.player.agent.score)
-            self.win_count += 1
-            self.player.reset_position()
+            if self.learning_mode:
+                self.player.agent.history.append(self.player.agent.score)
+                self.win_count += 1
+                self.player.reset_position()
+            elif not self.learning_mode and player_row == MAP_ROW - 1:
+                self.win_count += 1
+                self.player.reset_position()
 
         player_row = self.player.current_row()
 
@@ -95,10 +106,18 @@ class GameWindow(arcade.Window):
                     self.player.reset_position()
 
     def on_key_press(self, key, modifiers):
-        self.player.move(key)
+        if not self.learning_mode:
+            self.player.move(key)
 
     def draw_debug_grid(self):
         for i in range(0, MAP_COL):
             arcade.draw_line(i * SPRITE_SIZE, 0, i * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, arcade.color.WHITE, 1)
         for i in range(0, MAP_ROW):
             arcade.draw_line(0, i * SPRITE_SIZE, MAP_COL * SPRITE_SIZE, i * SPRITE_SIZE, arcade.color.WHITE, 1)
+
+    def close(self):
+        if self.learning_mode:
+            self.player.agent.save_qtable()
+            plt.plot(self.player.agent.history)
+            plt.show()
+        super().close()
