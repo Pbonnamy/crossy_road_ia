@@ -64,21 +64,21 @@ class Agent:
             (row + SPRITE_SIZE * 2, col - SPRITE_SIZE),
             (row + SPRITE_SIZE * 2, col),
             (row + SPRITE_SIZE * 2, col + SPRITE_SIZE),
-            (row + SPRITE_SIZE * 3, col - SPRITE_SIZE),
-            (row + SPRITE_SIZE * 3, col),
-            (row + SPRITE_SIZE * 3, col + SPRITE_SIZE),
+            #(row + SPRITE_SIZE * 3, col - SPRITE_SIZE),
+            #(row + SPRITE_SIZE * 3, col),
+            #(row + SPRITE_SIZE * 3, col + SPRITE_SIZE),
             (row + SPRITE_SIZE, col - SPRITE_SIZE),
             (row + SPRITE_SIZE, col),
             (row + SPRITE_SIZE, col + SPRITE_SIZE),
             (row, col - SPRITE_SIZE),
-            (row, col - SPRITE_SIZE * 2),
+            #(row, col - SPRITE_SIZE * 2),
             (row, col + SPRITE_SIZE),
-            (row, col + SPRITE_SIZE * 2),
+            #(row, col + SPRITE_SIZE * 2),
             (row - SPRITE_SIZE, col - SPRITE_SIZE),
-            (row - SPRITE_SIZE, col - SPRITE_SIZE * 2),
+            #(row - SPRITE_SIZE, col - SPRITE_SIZE * 2),
             (row - SPRITE_SIZE, col),
             (row - SPRITE_SIZE, col + SPRITE_SIZE),
-            (row - SPRITE_SIZE, col + SPRITE_SIZE * 2)
+            #(row - SPRITE_SIZE, col + SPRITE_SIZE * 2)
         ]
 
     def get_state(self):

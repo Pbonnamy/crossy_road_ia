@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui
+import matplotlib.pyplot as plt
 from arcade.gui import UIBoxLayout
-
 from settings import SPRITE_SIZE, MAP_COL
 
 
@@ -86,6 +86,8 @@ class UI:
         self.window.reset()
 
     def new_map(self, _):
+        plt.plot(self.window.player.agent.history)
+        plt.show()
         self.window.new_map()
         self.window.player.reset_position()
         self.window.player.agent.history = []
