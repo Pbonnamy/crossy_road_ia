@@ -2,7 +2,7 @@ import arcade
 import arcade.gui
 from arcade.gui import UIBoxLayout
 
-from settings import SPRITE_SIZE
+from settings import SPRITE_SIZE, MAP_COL
 
 
 class UI:
@@ -10,13 +10,13 @@ class UI:
         self.window = window
         self.ui_manager = arcade.gui.UIManager()
         self.ui_manager.enable()
-        self.setup()
+        self.add_speed_buttons()
+        self.add_game_state_buttons()
 
     def draw(self):
         self.ui_manager.draw()
 
-    def setup(self):
-        self.ui_manager.enable()
+    def add_speed_buttons(self):
 
         layout = UIBoxLayout(
             x=0,
@@ -40,11 +40,34 @@ class UI:
             layout
         )
 
-    def create_btn(self, text, on_click):
+    def add_game_state_buttons(self):
+        width = SPRITE_SIZE * 1.5
+        layout = UIBoxLayout(
+            x=MAP_COL * SPRITE_SIZE - width * 2 - 10,
+            y=SPRITE_SIZE / 2 * 1.5 + 10,
+            vertical=False
+        )
+
+        reset_btn = self.create_btn("Reset", self.reset, width=width)
+        new_map_btn = self.create_btn("New", self.new_map, width=width)
+
+        padding = arcade.gui.UIPadding(
+            padding=(5, 5, 5, 5),
+            child=reset_btn
+        )
+
+        layout.add(new_map_btn)
+        layout.add(padding)
+
+        self.ui_manager.add(
+            layout
+        )
+
+    def create_btn(self, text, on_click, width=SPRITE_SIZE / 2 * 1.5, height=SPRITE_SIZE / 2 * 1.5):
         btn = arcade.gui.UIFlatButton(
             text=text,
-            width=SPRITE_SIZE / 2 * 1.5,
-            height=SPRITE_SIZE / 2 * 1.5,
+            width=width,
+            height=height
         )
 
         btn.on_click = on_click
@@ -58,3 +81,13 @@ class UI:
     def slower(self, _):
         self.window.rate /= 2
         self.window.set_update_rate(1 / self.window.rate)
+
+    def reset(self, _):
+        self.window.reset()
+
+    def new_map(self, _):
+        self.window.new_map()
+        self.window.player.reset_position()
+        self.window.player.agent.history = []
+        self.window.win_count = 0
+        self.window.loss_count = 0

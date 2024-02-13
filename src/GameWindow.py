@@ -1,8 +1,5 @@
 import arcade
-import arcade.gui
 import random
-
-from arcade.gui import UIBoxLayout
 
 from src.Grass import Grass
 from src.Player import Player
@@ -16,15 +13,21 @@ class GameWindow(arcade.Window):
     def __init__(self, debug_mode):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
         self.lanes = []
-        self.generate_map()
         self.player = Player(self.lanes)
+        self.new_map()
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
         self.rate = BASE_WINDOW_RATE
         self.ui = UI(self)
 
-    def generate_map(self):
+    def reset(self):
+        self.win_count = 0
+        self.loss_count = 0
+        self.player.reset()
+
+    def new_map(self):
+        self.lanes = []
         for i in range(0, MAP_ROW):
             if i == 0 or i == MAP_ROW - 1:
                 lane = SafeZone(i, "start" if i == 0 else "end")
@@ -36,6 +39,9 @@ class GameWindow(arcade.Window):
                     lane = Grass(i)
 
             self.lanes.append(lane)
+
+        self.player.lanes = self.lanes
+        self.player.agent.lanes = self.lanes
 
     def on_draw(self):
         arcade.start_render()
@@ -89,7 +95,7 @@ class GameWindow(arcade.Window):
                     self.player.reset_position()
 
     def on_key_press(self, key, modifiers):
-        self.player.move(key, self.lanes)
+        self.player.move(key)
 
     def draw_debug_grid(self):
         for i in range(0, MAP_COL):

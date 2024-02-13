@@ -24,6 +24,12 @@ class Agent:
         self.state = self.get_state()
         self.add_state(self.state)
 
+    def reset(self):
+        self.history = []
+        self.qtable = {}
+        self.state = self.get_state()
+        self.add_state(self.state)
+
     def best_action(self):
         return arg_max(self.qtable[self.state])
 
@@ -41,7 +47,7 @@ class Agent:
 
     def update(self):
         action = self.best_action()
-        reward = self.player.move(self.get_key(action), self.lanes)
+        reward = self.player.move(self.get_key(action))
         self.score += reward
         new_state = self.get_state()
         self.add_state(new_state)
