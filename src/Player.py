@@ -1,28 +1,28 @@
 import arcade
 
-from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING
+from settings import MAP_COL, SPRITE_SIZE, MAP_ROW, SPRITE_SCALING, REWARD_WALL, REWARD_DEFAULT, UP_KEYS, DOWN_KEYS, LEFT_KEYS, RIGHT_KEYS, REWARD_GOAL, REWARD_CAR
+from src.Agent import Agent
 from src.Grass import Grass
-
-UP_KEYS = [122, 65362]  # z, up arrow
-DOWN_KEYS = [115, 65364]  # s, down arrow
-LEFT_KEYS = [113, 65361]  # q, left arrow
-RIGHT_KEYS = [100, 65363]  # d, right arrow
+from src.Road import Road
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, lanes):
         self.sprite = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
         self.size = SPRITE_SIZE
+        self.lanes = lanes
+        self.agent = Agent(self, lanes)
         self.reset_position()
 
     def draw(self):
         self.sprite.draw()
 
     def reset_position(self):
+        self.agent.score = 0
         self.sprite.center_x = MAP_COL * SPRITE_SIZE / 2
         self.sprite.center_y = SPRITE_SIZE / 2
 
-    def move(self, key, lanes):
+    def move(self, key):
         center_x = self.sprite.center_x
         center_y = self.sprite.center_y
 
@@ -35,11 +35,22 @@ class Player:
         elif key in RIGHT_KEYS:
             center_x += self.size
 
-        if self.can_move(center_x, center_y, lanes):
+        if self.can_move(center_x, center_y):
             self.sprite.center_x = center_x
             self.sprite.center_y = center_y
+            if self.current_row() == MAP_ROW - 1:
+                return REWARD_GOAL
+            else:
+                for lane in self.lanes:
+                    if lane.index == self.current_row() and isinstance(lane, Road):
+                        if lane.hit_by_car(self):
+                            return REWARD_CAR
 
-    def can_move(self, new_x, new_y, lanes):
+            return REWARD_DEFAULT
+        else:
+            return REWARD_WALL
+
+    def can_move(self, new_x, new_y):
         max_x = MAP_COL * SPRITE_SIZE
         max_y = MAP_ROW * SPRITE_SIZE
 
@@ -50,7 +61,7 @@ class Player:
         target_row = int(new_y / self.size)
 
         # Check if the player is trying to move into an obstacle
-        for lane in lanes:
+        for lane in self.lanes:
             if lane.index == target_row and isinstance(lane, Grass):
                 old_x, old_y = self.sprite.center_x, self.sprite.center_y
                 self.sprite.center_x, self.sprite.center_y = new_x, new_y
@@ -63,3 +74,6 @@ class Player:
 
     def current_row(self):
         return int(self.sprite.center_y / self.size)
+
+    def current_col(self):
+        return int(self.sprite.center_x / self.size)

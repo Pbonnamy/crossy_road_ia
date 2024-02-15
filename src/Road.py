@@ -1,22 +1,19 @@
 import arcade
 import random
 
-from settings import SPRITE_SCALING, CAR_WIDTH
+from settings import SPRITE_SCALING, CAR_WIDTH, EMPTY, SPRITE_SIZE, CAR_RIGHT, CAR_LEFT, CAR_SPACINGS, CAR_SPEEDS
 from src.Lane import Lane
 
 ROAD_COLOR_1 = (82, 88, 102)
 ROAD_COLOR_2 = (74, 80, 94)
 
-CAR_SPEEDS = [2, 2.5, 3]
-CAR_SPACINGS = [1, 2, 3, 4, 5]
-
 
 class Road(Lane):
-    def __init__(self, index):
+    def __init__(self, index, direction):
         super().__init__(index)
         self.cars = arcade.SpriteList()
         self.next_car_spacing = random.choice(CAR_SPACINGS)
-        self.direction = random.choice(['left', 'right'])
+        self.direction = direction
         self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
 
     def add_car(self):
@@ -61,3 +58,12 @@ class Road(Lane):
 
     def get_color(self):
         return ROAD_COLOR_1 if self.index % 2 == 0 else ROAD_COLOR_2
+
+    def get_state(self, col):
+        fake_player = arcade.Sprite(':resources:images/enemies/bee.png', SPRITE_SCALING)
+        fake_player.center_x = col * SPRITE_SIZE + SPRITE_SIZE / 2
+        fake_player.center_y = self.height / 2 + self.index * self.height
+        for car in self.cars:
+            if arcade.check_for_collision(fake_player, car):
+                return CAR_RIGHT if self.direction == 'right' else CAR_LEFT
+        return EMPTY
