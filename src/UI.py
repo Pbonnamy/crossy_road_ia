@@ -43,7 +43,7 @@ class UI:
             vertical=False,
         )
 
-        reset_btn = self.create_btn("Reset", self.reset, width=width)
+        plot_btn = self.create_btn("Plot", self.plot, width=width)
         first_level_btn = self.create_btn("1", self.launch_first_level)
         second_level_btn = self.create_btn("2", self.launch_second_level)
         third_level_btn = self.create_btn("3", self.launch_third_level)
@@ -56,7 +56,7 @@ class UI:
         layout.add(space)
         layout.add(third_level_btn)
         layout.add(space)
-        layout.add(reset_btn)
+        layout.add(plot_btn)
 
         self.ui_manager.add(
             layout
@@ -81,8 +81,9 @@ class UI:
         self.window.rate /= 2
         self.window.set_update_rate(1 / self.window.rate)
 
-    def reset(self, _):
-        self.window.reset()
+    def plot(self, _):
+        plt.plot(self.window.player.agent.history)
+        plt.show()
 
     def new_map(self, level):
         plt.plot(self.window.player.agent.history)

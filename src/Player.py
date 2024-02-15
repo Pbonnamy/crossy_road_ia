@@ -17,10 +17,6 @@ class Player:
     def draw(self):
         self.sprite.draw()
 
-    def reset(self):
-        self.reset_position()
-        self.agent.reset()
-
     def reset_position(self):
         self.agent.score = 0
         self.sprite.center_x = MAP_COL * SPRITE_SIZE / 2

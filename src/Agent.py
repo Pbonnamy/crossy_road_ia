@@ -24,12 +24,6 @@ class Agent:
         self.state = self.get_state()
         self.add_state(self.state)
 
-    def reset(self):
-        self.history = []
-        self.qtable = {}
-        self.state = self.get_state()
-        self.add_state(self.state)
-
     def best_action(self):
         return arg_max(self.qtable[self.state])
 

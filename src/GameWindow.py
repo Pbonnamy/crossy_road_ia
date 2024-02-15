@@ -22,11 +22,6 @@ class GameWindow(arcade.Window):
         self.rate = BASE_WINDOW_RATE
         self.ui = UI(self)
 
-    def reset(self):
-        self.win_count = 0
-        self.loss_count = 0
-        self.player.reset()
-
     def new_map(self, level):
         self.lanes = []
 
