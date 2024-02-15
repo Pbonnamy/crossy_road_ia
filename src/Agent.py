@@ -1,4 +1,5 @@
 import pickle
+import random
 from os.path import exists
 
 import arcade
@@ -20,11 +21,14 @@ class Agent:
         self.player = player
         self.lanes = lanes
         self.score = 0
+        self.noise = 0
         self.history = []
         self.state = self.get_state()
         self.add_state(self.state)
 
     def best_action(self):
+        if random.random() < self.noise:
+            return random.choice(ACTIONS)
         return arg_max(self.qtable[self.state])
 
     def get_key(self, action):

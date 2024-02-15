@@ -4,7 +4,7 @@ import random
 from src.Grass import Grass
 from src.Player import Player
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE, LEVEL1, \
-    SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT
+    SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT, NOISE_KEY
 from src.Road import Road
 from src.SafeZone import SafeZone
 from src.UI import UI
@@ -66,7 +66,8 @@ class GameWindow(arcade.Window):
         self.draw_text('Iterations: ' + str(self.win_count + self.loss_count), MAP_COL / 3 * SPRITE_SIZE,MAP_ROW * SPRITE_SIZE - 40)
         self.draw_text('Q-Table Size: ' + str(len(self.player.agent.qtable) * len(ACTIONS)), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 20)
         self.draw_text('Score: ' + str(self.player.agent.score), MAP_COL / 3 * SPRITE_SIZE * 2, MAP_ROW * SPRITE_SIZE - 40)
-        self.draw_text('Speed: ' + str(self.rate), MAP_COL/8 * SPRITE_SIZE, 20)
+        self.draw_text('Noise: ' + str(self.player.agent.noise), MAP_COL / 8 * SPRITE_SIZE, 10)
+        self.draw_text('Speed: ' + str(self.rate), MAP_COL/8 * SPRITE_SIZE, 30)
 
     def draw_text(self, text, x, y):
         arcade.draw_text(text, x, y, arcade.color.BLACK, 14, bold=True)
@@ -83,6 +84,7 @@ class GameWindow(arcade.Window):
         else:
             self.player.agent.history.append(self.player.agent.score)
             self.win_count += 1
+            self.player.agent.noise *= 1 - 1E-1
             self.player.reset_position()
 
         player_row = self.player.current_row()
@@ -95,6 +97,9 @@ class GameWindow(arcade.Window):
                     self.player.reset_position()
 
     def on_key_press(self, key, modifiers):
+        if key == NOISE_KEY:
+            self.player.agent.noise = 1
+
         self.player.move(key)
 
     def draw_debug_grid(self):

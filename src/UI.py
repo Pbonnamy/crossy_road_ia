@@ -90,6 +90,7 @@ class UI:
         plt.show()
         self.window.new_map(level)
         self.window.player.reset_position()
+        self.window.player.agent.noise = 0
         self.window.player.agent.history = []
         self.window.win_count = 0
         self.window.loss_count = 0
