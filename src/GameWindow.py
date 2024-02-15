@@ -3,7 +3,8 @@ import random
 
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE, LEVEL1, \
+    SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT
 from src.Road import Road
 from src.SafeZone import SafeZone
 from src.UI import UI
@@ -14,7 +15,7 @@ class GameWindow(arcade.Window):
         super().__init__(MAP_COL * SPRITE_SIZE, MAP_ROW * SPRITE_SIZE, 'Crossy Road')
         self.lanes = []
         self.player = Player(self.lanes)
-        self.new_map()
+        self.new_map(LEVEL1)
         self.debug_mode = debug_mode
         self.win_count = 0
         self.loss_count = 0
@@ -26,17 +27,21 @@ class GameWindow(arcade.Window):
         self.loss_count = 0
         self.player.reset()
 
-    def new_map(self):
+    def new_map(self, level):
         self.lanes = []
-        for i in range(0, MAP_ROW):
-            if i == 0 or i == MAP_ROW - 1:
-                lane = SafeZone(i, "start" if i == 0 else "end")
+
+        for i in range(0, len(level)):
+
+            if level[i] == SAFE_ZONE_START:
+                lane = SafeZone(i, 'start')
+            elif level[i] == SAFE_ZONE_END:
+                lane = SafeZone(i, 'end')
+            elif level[i] == ROAD_RIGHT:
+                lane = Road(i, 'right')
+            elif level[i] == ROAD_LEFT:
+                lane = Road(i, 'left')
             else:
-                rand = random.randint(0, 10)
-                if rand < ROAD_PROBABILITY:
-                    lane = Road(i)
-                else:
-                    lane = Grass(i)
+                lane = Grass(i)
 
             self.lanes.append(lane)
 

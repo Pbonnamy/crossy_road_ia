@@ -9,11 +9,11 @@ ROAD_COLOR_2 = (74, 80, 94)
 
 
 class Road(Lane):
-    def __init__(self, index):
+    def __init__(self, index, direction):
         super().__init__(index)
         self.cars = arcade.SpriteList()
         self.next_car_spacing = random.choice(CAR_SPACINGS)
-        self.direction = random.choice(['left', 'right'])
+        self.direction = direction
         self.car_speed = random.choice(CAR_SPEEDS) if self.direction == 'right' else -random.choice(CAR_SPEEDS)
 
     def add_car(self):

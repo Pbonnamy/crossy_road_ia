@@ -3,16 +3,79 @@ SPRITE_SCALING = 0.4
 SPRITE_SIZE = int(128 * SPRITE_SCALING)
 CAR_WIDTH = int(256 * SPRITE_SCALING)
 
-# Map dimensions
-MAP_COL = 17  # Odd number only
-MAP_ROW = 15
-
 # Allow debug information
 DEBUG_MODE = True
 
 # Possible actions
 ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE = 'U', 'D', 'L', 'R', 'I'
 ACTIONS = [ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE]
+
+#Lane types
+SAFE_ZONE_START = 'SZS'
+SAFE_ZONE_END = 'SZE'
+ROAD_RIGHT = 'RR'
+ROAD_LEFT = 'RL'
+GRASS = 'G'
+
+# Map dimensions
+MAP_COL = 17  # Odd number only
+MAP_ROW = 15
+
+# Levels
+LEVEL1 = [
+    SAFE_ZONE_START,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    GRASS,
+    SAFE_ZONE_END
+]
+
+LEVEL2 = [
+    SAFE_ZONE_START,
+    GRASS,
+    GRASS,
+    GRASS,
+    ROAD_RIGHT,
+    GRASS,
+    GRASS,
+    ROAD_LEFT,
+    GRASS,
+    GRASS,
+    GRASS,
+    ROAD_RIGHT,
+    GRASS,
+    GRASS,
+    SAFE_ZONE_END
+]
+
+LEVEL3 = [
+    SAFE_ZONE_START,
+    GRASS,
+    ROAD_RIGHT,
+    GRASS,
+    ROAD_RIGHT,
+    GRASS,
+    GRASS,
+    ROAD_LEFT,
+    GRASS,
+    ROAD_LEFT,
+    GRASS,
+    ROAD_RIGHT,
+    GRASS,
+    GRASS,
+    SAFE_ZONE_END
+]
+
 
 # Q-Learning settings
 LEARNING_RATE = 0.5

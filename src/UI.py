@@ -2,7 +2,7 @@ import arcade
 import arcade.gui
 import matplotlib.pyplot as plt
 from arcade.gui import UIBoxLayout
-from settings import SPRITE_SIZE, MAP_COL
+from settings import SPRITE_SIZE, MAP_COL, LEVEL1, LEVEL2, LEVEL3
 
 
 class UI:
@@ -17,23 +17,18 @@ class UI:
         self.ui_manager.draw()
 
     def add_speed_buttons(self):
-
         layout = UIBoxLayout(
-            x=0,
-            y=SPRITE_SIZE / 2 * 1.5 + 10,
+            x=5,
+            y=SPRITE_SIZE * 1.5,
             vertical=False
         )
 
         faster_speed_btn = self.create_btn("+", self.faster)
-
-        padding = arcade.gui.UIPadding(
-            padding=(5, 5, 5, 5),
-            child=faster_speed_btn
-        )
-
         slower_speed_btn = self.create_btn("-", self.slower)
+        space = arcade.gui.UISpace(width=5)
 
-        layout.add(padding)
+        layout.add(faster_speed_btn)
+        layout.add(space)
         layout.add(slower_speed_btn)
 
         self.ui_manager.add(
@@ -43,21 +38,25 @@ class UI:
     def add_game_state_buttons(self):
         width = SPRITE_SIZE * 1.5
         layout = UIBoxLayout(
-            x=MAP_COL * SPRITE_SIZE - width * 2 - 10,
-            y=SPRITE_SIZE / 2 * 1.5 + 10,
-            vertical=False
+            x=MAP_COL * SPRITE_SIZE - (width + SPRITE_SIZE / 2 * 1.5 * 3 + 20),
+            y=SPRITE_SIZE * 1.5,
+            vertical=False,
         )
 
         reset_btn = self.create_btn("Reset", self.reset, width=width)
-        new_map_btn = self.create_btn("New", self.new_map, width=width)
+        first_level_btn = self.create_btn("1", self.launch_first_level)
+        second_level_btn = self.create_btn("2", self.launch_second_level)
+        third_level_btn = self.create_btn("3", self.launch_third_level)
 
-        padding = arcade.gui.UIPadding(
-            padding=(5, 5, 5, 5),
-            child=reset_btn
-        )
+        space = arcade.gui.UISpace(width=5)
 
-        layout.add(new_map_btn)
-        layout.add(padding)
+        layout.add(first_level_btn)
+        layout.add(space)
+        layout.add(second_level_btn)
+        layout.add(space)
+        layout.add(third_level_btn)
+        layout.add(space)
+        layout.add(reset_btn)
 
         self.ui_manager.add(
             layout
@@ -85,11 +84,20 @@ class UI:
     def reset(self, _):
         self.window.reset()
 
-    def new_map(self, _):
+    def new_map(self, level):
         plt.plot(self.window.player.agent.history)
         plt.show()
-        self.window.new_map()
+        self.window.new_map(level)
         self.window.player.reset_position()
         self.window.player.agent.history = []
         self.window.win_count = 0
         self.window.loss_count = 0
+
+    def launch_first_level(self, _):
+        self.new_map(LEVEL1)
+
+    def launch_second_level(self, _):
+        self.new_map(LEVEL2)
+
+    def launch_third_level(self, _):
+        self.new_map(LEVEL3)
