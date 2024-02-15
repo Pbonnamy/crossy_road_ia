@@ -18,7 +18,7 @@ ROAD_LEFT = 'RL'
 GRASS = 'G'
 
 # Map dimensions
-MAP_COL = 15  # Odd number only
+MAP_COL = 17  # Odd number only
 MAP_ROW = 15
 
 # Levels
@@ -84,7 +84,7 @@ DISCOUNT_FACTOR = 0.7
 REWARD_WALL = -(MAP_ROW * MAP_COL / 2)
 REWARD_CAR = -(MAP_ROW * MAP_COL)
 REWARD_DEFAULT = -1
-REWARD_GOAL = MAP_ROW * MAP_COL * 2
+REWARD_GOAL = MAP_ROW * MAP_COL
 
 # Speed of the game
 BASE_WINDOW_RATE = 60
