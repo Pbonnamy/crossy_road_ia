@@ -4,7 +4,7 @@ SPRITE_SIZE = int(128 * SPRITE_SCALING)
 CAR_WIDTH = int(256 * SPRITE_SCALING)
 
 # Allow debug information
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 # Possible actions
 ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE = 'U', 'D', 'L', 'R', 'I'
@@ -93,7 +93,6 @@ BASE_WINDOW_RATE = 60
 NUMBER_OF_OBSTACLES = [2, 3, 4]
 CAR_SPEEDS = [2, 2.5, 3]
 CAR_SPACINGS = [4, 5]
-ROAD_PROBABILITY = 2  # out of 10
 
 # State symbols
 WALL = 'W'

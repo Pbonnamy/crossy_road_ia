@@ -1,9 +1,8 @@
 import arcade
-import random
 
 from src.Grass import Grass
 from src.Player import Player
-from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ROAD_PROBABILITY, ACTIONS, BASE_WINDOW_RATE, LEVEL1, \
+from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ACTIONS, BASE_WINDOW_RATE, LEVEL1, \
     SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT, NOISE_KEY
 from src.Road import Road
 from src.SafeZone import SafeZone
