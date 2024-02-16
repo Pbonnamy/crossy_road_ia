@@ -6,6 +6,9 @@ CAR_WIDTH = int(256 * SPRITE_SCALING)
 # Allow debug information
 DEBUG_MODE = False
 
+# Enable reinforcement learning
+LEARNING_MODE = True
+
 # Possible actions
 ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE = 'U', 'D', 'L', 'R', 'I'
 ACTIONS = [ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT, ACTION_IDLE]

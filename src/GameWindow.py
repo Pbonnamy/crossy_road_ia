@@ -3,7 +3,7 @@ import arcade
 from src.Grass import Grass
 from src.Player import Player
 from settings import SPRITE_SIZE, MAP_COL, MAP_ROW, ACTIONS, BASE_WINDOW_RATE, LEVEL1, \
-    SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT, NOISE_KEY
+    SAFE_ZONE_START, SAFE_ZONE_END, ROAD_RIGHT, ROAD_LEFT, NOISE_KEY, LEARNING_MODE
 from src.Road import Road
 from src.SafeZone import SafeZone
 from src.UI import UI
@@ -79,7 +79,8 @@ class GameWindow(arcade.Window):
         player_row = self.player.current_row()
 
         if player_row != MAP_ROW - 1:
-            self.player.agent.update()
+            if LEARNING_MODE:
+                self.player.agent.update()
         else:
             self.player.agent.history.append(self.player.agent.score)
             self.win_count += 1
